@@ -6,6 +6,7 @@ import { Dialog, WordTile } from './components';
 import { defaultState, mergeWithStarterVocabulary } from './data';
 import { finishStudyTask, loadStudyRecords, saveStudyRecords } from './evaluation';
 import { loadState, saveState } from './storage';
+import type { StudyStart } from './StudyPanel';
 import type { ActiveStudyTask, AppState, ChoiceSet, StudyRecord, VocabularyTile } from './types';
 import './styles.css';
 
@@ -99,9 +100,9 @@ export default function App() {
   };
   const unlock = () => { setPinOpen(false); leaveFullscreen(); setActiveSet(null); setScreen('adult'); };
 
-  const startStudy = (participantCode: string, task: string) => {
-    setActiveStudy({ participantCode, task, startedAt: new Date().toISOString(), taps: 0, undos: 0, errors: 0 });
-    if (!task.toLowerCase().includes('grown-up')) openBoard();
+  const startStudy = ({ startsOn, ...start }: StudyStart) => {
+    setActiveStudy({ ...start, startedAt: new Date().toISOString(), taps: 0, undos: 0, errors: 0 });
+    if (startsOn === 'board') openBoard();
   };
   const logStudyMetric = (metric: 'tap' | 'undo' | 'error') => setActiveStudy((current) => current ? {
     ...current,
@@ -130,7 +131,7 @@ export default function App() {
         activeStudy={activeStudy} records={studyRecords}
         onStartStudy={startStudy} onClearRecords={() => { setStudyRecords([]); saveStudyRecords([]); }} />}
     </div>
-    {activeStudy && screen === 'adult' && activeStudy.task.toLowerCase().includes('grown-up') && <aside className="study-strip floating" aria-label="Usability task recorder">
+    {activeStudy && screen === 'adult' && <aside className="study-strip floating" aria-label="Usability task recorder">
       <span><strong>Study task running</strong> {activeStudy.participantCode} · {activeStudy.task}</span>
       <div><button onClick={() => completeStudy('success')}>Success</button><button onClick={() => completeStudy('assisted')}>With help</button><button onClick={() => completeStudy('failed')}>Could not complete</button></div>
     </aside>}

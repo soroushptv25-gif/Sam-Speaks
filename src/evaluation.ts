@@ -1,25 +1,38 @@
-import type { ActiveStudyTask, AppState, StudyRecord } from './types';
+import { interviewQuestions, meetsTarget, susItems } from './study';
+import type { ActiveStudyTask, AppState, InterviewNote, StudyRecord, SusResponse } from './types';
 
 const RECORDS_KEY = 'sam-speaks-study-records';
+const SUS_KEY = 'sam-speaks-sus';
+const INTERVIEW_KEY = 'sam-speaks-interviews';
 
-export function loadStudyRecords(): StudyRecord[] {
+function loadList<T>(key: string): T[] {
   try {
-    const parsed = JSON.parse(localStorage.getItem(RECORDS_KEY) ?? '[]');
+    const parsed = JSON.parse(localStorage.getItem(key) ?? '[]');
     return Array.isArray(parsed) ? parsed : [];
   } catch {
     return [];
   }
 }
-
-export function saveStudyRecords(records: StudyRecord[]) {
-  try { localStorage.setItem(RECORDS_KEY, JSON.stringify(records)); } catch { /* storage blocked: records stay in memory */ }
+function saveList<T>(key: string, items: T[]) {
+  try { localStorage.setItem(key, JSON.stringify(items)); } catch { /* storage blocked: data stays in memory */ }
 }
+
+export const loadStudyRecords = () => loadList<StudyRecord>(RECORDS_KEY);
+export const saveStudyRecords = (records: StudyRecord[]) => saveList(RECORDS_KEY, records);
+export const loadSus = () => loadList<SusResponse>(SUS_KEY);
+export const saveSus = (items: SusResponse[]) => saveList(SUS_KEY, items);
+export const loadInterviews = () => loadList<InterviewNote>(INTERVIEW_KEY);
+export const saveInterviews = (items: InterviewNote[]) => saveList(INTERVIEW_KEY, items);
 
 export function finishStudyTask(active: ActiveStudyTask, outcome: StudyRecord['outcome']): StudyRecord {
   const endedAt = new Date();
   return {
     id: `study-${Date.now()}`,
     participantCode: active.participantCode,
+    participantGroup: active.participantGroup,
+    session: active.session,
+    taskId: active.taskId,
+    consent: active.consent,
     task: active.task,
     startedAt: active.startedAt,
     endedAt: endedAt.toISOString(),
@@ -42,15 +55,31 @@ function downloadBlob(blob: Blob, filename: string) {
   window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-export function downloadStudyCsv(records: StudyRecord[]) {
-  const header = ['participant_code', 'task', 'outcome', 'duration_seconds', 'taps', 'undos', 'errors', 'started_at', 'ended_at'];
-  const rows = records.map((record) => [
-    record.participantCode, record.task, record.outcome, record.durationSeconds,
-    record.taps, record.undos, record.errors, record.startedAt, record.endedAt,
-  ]);
-  const csv = [header, ...rows].map((row) => row.map(csvCell).join(',')).join('\n');
-  downloadBlob(new Blob([csv], { type: 'text/csv;charset=utf-8' }), `sam-speaks-usability-${new Date().toISOString().slice(0, 10)}.csv`);
+export const toCsv = (rows: (string | number)[][]) => rows.map((row) => row.map(csvCell).join(',')).join('\n');
+
+function downloadCsv(rows: (string | number)[][], name: string) {
+  downloadBlob(new Blob(['﻿' + toCsv(rows)], { type: 'text/csv;charset=utf-8' }), `sam-speaks-${name}-${new Date().toISOString().slice(0, 10)}.csv`);
 }
+
+export function studyCsvRows(records: StudyRecord[]) {
+  const header = ['participant_code', 'participant_group', 'session', 'task', 'outcome', 'target_met', 'duration_seconds', 'taps', 'undos', 'errors', 'consent', 'started_at', 'ended_at'];
+  return [header, ...records.map((record) => [
+    record.participantCode, record.participantGroup ?? '', record.session ?? '', record.task, record.outcome, meetsTarget(record) ? 'yes' : 'no',
+    record.durationSeconds, record.taps, record.undos, record.errors, record.consent ?? '', record.startedAt, record.endedAt,
+  ])];
+}
+
+export const downloadStudyCsv = (records: StudyRecord[]) => downloadCsv(studyCsvRows(records), 'usability-tasks');
+
+export const downloadSusCsv = (items: SusResponse[]) => downloadCsv([
+  ['participant_code', 'participant_group', 'date', ...susItems.map((_, index) => `q${index + 1}`), 'sus_score'],
+  ...items.map((item) => [item.participantCode, item.participantGroup, item.date, ...item.answers, item.score]),
+], 'sus');
+
+export const downloadInterviewCsv = (items: InterviewNote[]) => downloadCsv([
+  ['participant_code', 'participant_group', 'date', ...interviewQuestions],
+  ...items.map((item) => [item.participantCode, item.participantGroup, item.date, ...item.answers]),
+], 'post-test-interview');
 
 const BOARD_FILE = 'sam-speaks-board.json';
 

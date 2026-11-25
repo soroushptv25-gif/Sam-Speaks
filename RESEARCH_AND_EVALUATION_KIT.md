@@ -2,15 +2,33 @@
 
 These are blank working instruments for the BSD 311 team. Adapt the wording with the instructor or supervisor before use. Do not invent responses, participants, timings, SUS scores, or findings.
 
-## 1. Participant information and consent script
+## 1. Consent forms
 
-> We are students designing a picture-based communication prototype for an HCI course. We would like to learn about your needs and observe you completing a few tasks. Participation is voluntary. You may skip any question or stop at any time. We will not include your name in our report. With your permission, we will record task times, errors, and notes. This is a classroom prototype, not a medical or diagnostic tool. Do you understand and agree to participate?
+Every participant needs a signed form **before** any task starts. The app's **Usability study** screen will not start a task until the facilitator ticks the matching consent boxes: one for an adult, or two for a child (parental consent and the child's own agreement).
 
-Record only: participant code, user group, consent yes/no, date, session method, and optional accessibility accommodations. Do not place names in the report dataset.
+### 1a. Adult consent form (parents, teachers, speech therapists)
 
-## 2. Requirements survey draft
+> We are students at Canadian University Dubai designing Sam Speaks, a picture-based communication prototype, for the course BSD 311 Human Computer Interaction. We would like you to try a few tasks, answer a 10-question questionnaire (SUS), and answer five short interview questions. It takes about 20 minutes. Taking part is voluntary, and you may skip any question or stop at any time without giving a reason. We record task times, taps, errors and short notes under a code such as P01. Your name will not appear in our report or data. This is a classroom prototype, not a medical or diagnostic tool.
+>
+> I agree to take part: ☐ Yes ☐ No  Participant code: ____  Signature: ________  Date: ____
 
-Target at least 15 appropriate respondents if the team selects a survey as one of its methods.
+### 1b. Parental consent form (for any child participant, aged 4–12)
+
+> We would like to invite your child to try Sam Speaks, a picture board prototype, for about 10 minutes, with you present. Your child will be asked to tap pictures, such as "water" or "help". We will record only task times and taps under a code. We will not take photos or video of your child, and we will not record their name, diagnosis or medical details. Your child can stop at any time, and we will stop straight away if they seem unhappy. You can withdraw your child's data until the report is submitted.
+>
+> I give permission for my child to take part: ☐ Yes ☐ No  Child's code: ____  Parent or guardian signature: ________  Date: ____
+
+### 1c. Child agreement script (read aloud, with the parent present)
+
+> "We made a game with pictures that talk. Would you like to try it? You can stop whenever you want. Just tell us, or push it away."
+
+Continue only if the child agrees (a yes, a nod, or the yes card). Stop if the child says no, looks upset, or turns away.
+
+Record only: participant code, user group, consent yes/no, date and session. Do not place names in the report dataset.
+
+## 2. Short parent survey
+
+Send this online survey to parents of children aged 4–12 who use or might use picture communication. Aim for at least 15 replies. It takes about 5 minutes. Start the survey with the consent paragraph from 1a. Teachers and therapists may also answer it, and question 1 separates their replies.
 
 1. Which perspective best describes you: parent/caregiver, teacher, speech therapist, other relevant supporter?
 2. How often do you support a child who uses pictures to communicate?
@@ -42,6 +60,20 @@ Use with at least three relevant users if interviews are selected.
 - What would success look like after one week of use?
 
 Follow up with “Can you show or describe a specific example?” without asking for identifying medical details.
+
+### 3a. Interview guide for a special education teacher or speech therapist
+
+Interview at least one professional. They see many children, so they can describe patterns that a single family cannot.
+
+- Which picture systems (for example, PECS or a communication book) do your students use now, and what works well?
+- How many pictures can a 4-year-old and a 10-year-old manage on one screen?
+- How do you teach a new picture? How long does it usually take before a child uses it on their own?
+- Do children rely on where a picture is? What happens when its position changes?
+- Do you prefer real photos or drawings, and does it depend on the child?
+- How do you run feelings or choice activities in class or therapy?
+- How do the school, the family and the therapist share vocabulary today?
+- What would stop you from recommending an app like this to a family?
+- Please look at the prototype. What would you change first?
 
 ## 4. Observation sheet
 
@@ -95,7 +127,7 @@ Follow up with “Can you show or describe a specific example?” without asking
 
 ## 6. Persona and scenario template
 
-Create at least two personas from patterns in real data. Do not build them from assumptions alone.
+Create at least two personas from patterns in real data. Do not build them from assumptions alone. For Adam, Sarah and Emily, fill in the last row with the participant it comes from (P1, P2, P3, or the teacher/therapist interview) for every goal and frustration. A trait that no participant mentioned should be removed or marked as an assumption.
 
 | Persona field | Evidence-based content |
 | --- | --- |
@@ -125,35 +157,59 @@ For each persona, write one short scenario with a trigger, goal, environment, ac
 - The child interface shall not expose editing controls.
 - The evaluation tool shall record anonymous task time, taps, undo actions, observed errors, and outcome locally and export them as CSV.
 
-## 8. Candidate measurable usability goals
+## 8. Measurable usability goals
 
-Confirm thresholds before testing, based on early research.
+Each goal has a number to meet, as the instructor asked. The app's **Usability study** screen checks every recorded task against these targets and shows whether each goal is met.
 
-- At least 90% of child-board task attempts produce the intended three-word message without facilitator help.
-- A first-time adult can add a context-specific picture in under two minutes with no more than one recoverable error.
-- All participants can find Help, Stop, and No without opening a category.
-- Changing to the large-picture layout does not prevent participants from finding the first eight core words.
-- At least 80% of adult participants correctly predict whether a saved word will appear on Home, School, or both before saving.
+| Goal | Target | How it is measured |
+| --- | --- | --- |
+| Effectiveness | At least 80% of child-board task attempts succeed without help | Task recorder: outcome |
+| Efficiency | Ask for help in 1 tap and under 10 seconds; say a feeling in 2 taps | Task recorder: time and taps |
+| Learnability | A first-time caregiver adds a photo card in under 2 minutes without help | Task recorder: first visit |
+| Memorability | One week later, the same caregiver adds a card in under 1 minute without help | Task recorder: return visit |
+| Satisfaction | Mean SUS score of 68 or higher (above the SUS average) | SUS questionnaire after the tasks |
+| Accessibility | Every participant finds Help with big pictures on, without help, in under 1 minute; 0 WCAG 2.2 AA contrast failures | Task recorder and automated contrast check |
 
 ## 9. Phase 2 usability test plan
 
-Recruit at least five real target users who are not classmates. Where direct child testing is inappropriate or requires additional safeguarding, agree on recruitment and proxy-user methods with the instructor before testing.
+Recruit at least five real target users who are not classmates. Include at least one special education teacher or speech therapist as well as parents. Test a child only with signed parental consent, the child's own agreement and a parent present. Where direct child testing is not possible, agree a proxy method with the instructor.
 
-### Tasks
+### Session order (about 20 minutes per adult)
 
-1. Build and speak “I want water.”
-2. Communicate an urgent need for help.
-3. Add “My bottle” to Home with a photo.
-4. Change to the large-picture layout and find Help again.
-5. Add a School-only classroom word and confirm it does not appear on Home.
+1. Consent form signed (section 1). Tick the consent box in the app.
+2. Tasks, recorded in the app (**Usability study → Run one task**).
+3. SUS questionnaire (**Usability study → System Usability Scale**, or on paper).
+4. Post-test interview (**Usability study → Post-test interview**).
+5. One week later: return visit for the memorability task.
 
-### Measures
+### Tasks (built into the app, each with its own target)
 
-| Participant code | Task | Success | Time | Errors | Help requests | Observation |
-| --- | --- | --- | --- | --- | --- | --- |
-| | | | | | | |
+| Task | Starts on | Goal | Target |
+| --- | --- | --- | --- |
+| Ask for water | Sam's board | Effectiveness | Done without help in 1 tap |
+| Ask for help | Sam's board | Efficiency | 1 tap, under 10 s |
+| Say how you feel | Sam's board | Efficiency | 2 taps (group, then picture) |
+| Choose a drink from a choice set | Sam's board | Effectiveness | 1 tap |
+| Fix a wrong picture (sentence mode) | Sam's board | Effectiveness | Done without help, using Undo |
+| Add a photo card (first time) | Grown-up area | Learnability | Under 2 minutes, without help |
+| Add a photo card (return visit) | Grown-up area | Memorability | Under 1 minute, without help |
+| Switch to big pictures and find Help | Grown-up area | Accessibility | Under 1 minute, without help |
 
-After the tasks, administer the official System Usability Scale or another instructor-approved questionnaire, then ask: what felt easiest, what was confusing, what should change first, and was any symbol unclear without its label?
+### SUS
+
+Use the standard 10-item System Usability Scale. Adults answer each item from 1 (strongly disagree) to 5 (strongly agree). The app scores it with the standard formula: odd items score minus 1, even items 5 minus score, and the sum is multiplied by 2.5. SUS is for adults; do not give it to children.
+
+### Post-test interview (five questions)
+
+1. What felt easiest?
+2. What was confusing, and where?
+3. Was any picture unclear without its word?
+4. What should we change first?
+5. Would you use this with your child or student? Why or why not?
+
+### Exporting the data
+
+Each part exports its own CSV file: tasks (including a `target_met` column), SUS answers and scores, and interview notes. Use these files for the analysis in the report.
 
 ## 10. Severity and revision log
 

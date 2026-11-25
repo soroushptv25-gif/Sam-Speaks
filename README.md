@@ -35,7 +35,13 @@ npm run preview
 - After the first visit, the app opens straight on Sam's board. It can optionally go full screen.
 - Large-picture and more-words layouts, adjustable spacing, optional labels, stronger contrast, and less motion
 - Saves on the device with IndexedDB (localStorage as a fallback), with a confirmed demo reset
-- A local, anonymous usability-task recorder with time, taps, undo/error counts, outcome and CSV export
+- A **Usability study** screen for Phase 2 testing:
+  - Measurable targets for all six usability goals: effectiveness, efficiency, learnability, memorability, satisfaction and accessibility. Results fill in as tasks are recorded.
+  - Eight built-in test tasks, each with its own target. The recorder logs anonymous time, taps, undo and error counts and the outcome, and marks whether the target was met. It handles first and return visits (the return visit measures memorability).
+  - A consent check: a task cannot start until consent is ticked. A child participant needs both parental consent and the child's own agreement.
+  - The standard 10-item SUS questionnaire, scored automatically against the target of 68.
+  - A five-question post-test interview form.
+  - CSV export for tasks, SUS answers and interview notes.
 - Keyboard and screen-reader support: focus is trapped in dialogs, Escape closes them, every control has a name, and all text meets WCAG AA contrast
 
 ## What is simulated

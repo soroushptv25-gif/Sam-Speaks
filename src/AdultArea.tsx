@@ -8,7 +8,8 @@ import { categoryTone, ConfirmDialog, EmptySlot, symbolLibrary, WordTile } from 
 import { SymbolArt } from './SymbolArt';
 import { BOARD_SIZE, boardSlots, nextOrder, nextPhrase, placeInSlot, removeEverywhere, slotIndexOf, swapSlots, tilesForCategory } from './board';
 import { categories, defaultState, mergeWithStarterVocabulary } from './data';
-import { downloadStudyCsv, shareBoard } from './evaluation';
+import { shareBoard } from './evaluation';
+import { StudyPanel, type StudyStart } from './StudyPanel';
 import { photoToCard } from './photo';
 import { speak } from './speech';
 import { clearState } from './storage';
@@ -31,7 +32,7 @@ export function AdultArea({ state, setState, onOpenBoard, onWelcome, onPractice,
   onPractice: (tiles: VocabularyTile[]) => void;
   onStartActivity: (set: ChoiceSet) => void;
   activeStudy: ActiveStudyTask | null; records: StudyRecord[];
-  onStartStudy: (participantCode: string, task: string) => void; onClearRecords: () => void;
+  onStartStudy: (start: StudyStart) => void; onClearRecords: () => void;
 }) {
   const [tab, setTab] = useState<Tab>('words');
   const [editing, setEditing] = useState<VocabularyTile | null>(null);
@@ -123,7 +124,7 @@ export function AdultArea({ state, setState, onOpenBoard, onWelcome, onPractice,
         {tab === 'sets' && <ChoiceSets state={state} setState={setState} onShow={onStartActivity} onPractise={onPractice} onToast={(text) => setToast({ text })} />}
         {tab === 'share' && <SharePrint state={state} setState={setState} onToast={(text) => setToast({ text })} />}
         {tab === 'settings' && <SettingsPanel state={state} setState={setState} onToast={(text) => setToast({ text })} />}
-        {tab === 'study' && <EvaluationPanel active={activeStudy} records={records} onStart={onStartStudy} onClear={() => setConfirm({ title: 'Remove all study records?', body: 'Export the CSV first if you still need them. This cannot be undone.', label: 'Remove records', run: onClearRecords })} />}
+        {tab === 'study' && <StudyPanel active={activeStudy} records={records} onStart={onStartStudy} onClear={() => setConfirm({ title: 'Remove all study records?', body: 'Export the CSV first if you still need them. This cannot be undone.', label: 'Remove records', run: onClearRecords })} />}
         {tab === 'about' && <AboutPanel />}
       </section>
 
@@ -544,29 +545,6 @@ function SettingsPanel({ state, setState, onToast }: { state: AppState; setState
   </div>;
 }
 
-function EvaluationPanel({ active, records, onStart, onClear }: {
-  active: ActiveStudyTask | null; records: StudyRecord[]; onStart: (participantCode: string, task: string) => void; onClear: () => void;
-}) {
-  const [participant, setParticipant] = useState('P01');
-  const [task, setTask] = useState('Ask for water');
-  const canStart = participant.trim() && task.trim() && !active;
-  return <div className="evaluation-layout">
-    <section className="evaluation-card">
-      <h2>Start one task</h2>
-      <p>Use anonymous participant codes only. Sam Speaks records time, taps, undo actions and errors on this device.</p>
-      <div className="form-grid two"><label>Participant code<input value={participant} maxLength={12} onChange={(event) => setParticipant(event.target.value)} placeholder="P01" /></label><label>Task<select value={task} onChange={(event) => setTask(event.target.value)}>
-        <option>Ask for water</option><option>Say how you feel</option><option>Fix a wrong picture</option><option>Find help on the School board</option><option>Choose a drink from a choice set</option><option>Add a photo card in the grown-up area</option>
-      </select></label></div>
-      <button className="primary-button" disabled={!canStart} onClick={() => onStart(participant.trim(), task.trim())}><FlaskConical aria-hidden="true" /> Start task on Sam’s board</button>
-      {active && <p className="active-study-note"><FlaskConical aria-hidden="true" /><span><strong>Recording {active.participantCode}</strong> {active.task}</span></p>}
-    </section>
-    <section className="evaluation-card">
-      <div className="evaluation-heading"><h2>{records.length} task record{records.length === 1 ? '' : 's'}</h2><div className="data-actions"><button className="secondary-button" disabled={!records.length} onClick={() => downloadStudyCsv(records)}><Download aria-hidden="true" /> Export CSV</button><button className="text-button danger-text" disabled={!records.length} onClick={onClear}><Trash2 aria-hidden="true" /> Remove all</button></div></div>
-      {records.length ? <div className="records-table" role="table" aria-label="Study records"><div className="record-row record-head" role="row"><span role="columnheader">Participant</span><span role="columnheader">Task</span><span role="columnheader">Outcome</span><span role="columnheader">Time</span><span role="columnheader">Taps</span><span role="columnheader">Errors</span></div>{records.map((record) => <div className="record-row" role="row" key={record.id}><strong role="cell">{record.participantCode}</strong><span role="cell">{record.task}</span><span role="cell" className={`outcome ${record.outcome}`}>{record.outcome}</span><span role="cell">{record.durationSeconds}s</span><span role="cell">{record.taps}</span><span role="cell">{record.errors}</span></div>)}</div> : <div className="empty-state compact"><FlaskConical aria-hidden="true" /><h3>No test data yet</h3><p>Run a real session with consent, then export the anonymous data for analysis.</p></div>}
-    </section>
-    <aside className="explain-card"><ShieldCheck aria-hidden="true" /><p><strong>Consent and anonymity are still required.</strong> This recorder supports the study; it does not replace consent, observation notes, SUS, the short interview, severity ranking or the team’s own analysis. Do not enter names.</p></aside>
-  </div>;
-}
 
 function AboutPanel() {
   const items = [

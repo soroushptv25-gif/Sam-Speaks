@@ -61,7 +61,15 @@ export interface AppState {
   seenWelcome: boolean;
 }
 
-export interface StudyRecord {
+/** Who took part, which visit, which task, and what consent was recorded (Phase 2). Older records only have the task label. */
+interface StudyContext {
+  participantGroup?: string;
+  session?: 'first' | 'return';
+  taskId?: string;
+  consent?: string;
+}
+
+export interface StudyRecord extends StudyContext {
   id: string;
   participantCode: string;
   task: string;
@@ -74,7 +82,10 @@ export interface StudyRecord {
   durationSeconds: number;
 }
 
-export interface ActiveStudyTask {
+export interface SusResponse { id: string; participantCode: string; participantGroup: string; answers: number[]; score: number; date: string }
+export interface InterviewNote { id: string; participantCode: string; participantGroup: string; answers: string[]; date: string }
+
+export interface ActiveStudyTask extends StudyContext {
   participantCode: string;
   task: string;
   startedAt: string;
